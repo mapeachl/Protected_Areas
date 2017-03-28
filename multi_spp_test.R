@@ -208,6 +208,7 @@ cat("
    
     # Detection
     BD1[j]~dunif(-20,20)
+    BD2[j]~dunif(-20,20)
   } 
     
     # Ecological submodel: Define state conditional on parameters
@@ -247,15 +248,18 @@ cat("
     # Observation model
   for (j in 1:nspp){
       for(i in 1:nsite){    
-        for (k in 1:nyear){
     
-    y[i,j,k] ~ dbern(muy[i,j,k])
-    muy[i,j,k] <- z[i,j,k]*pstar[i,j,k]
-    pstar[i,j,k] <- 1-(1-logitp[i,j,k])^effort[i,k]
-    logitp[i,j,k] <- 1/(1+exp(-BetaD1[j]))
+    y[i,j,1] ~ dbern(muy[i,j,1])
+    muy[i,j,1] <- z[i,j,1]*pstar[i,j,1]
+    pstar[i,j,1] <- 1-(1-logitp[i,j,1])^effort[i,1]
+    logitp[i,j,1] <- 1/(1+exp(-BD1[j]))
+
+    y[i,j,2] ~ dbern(muy[i,j,2])
+    muy[i,j,2] <- z[i,j,2]*pstar[i,j,2]
+    pstar[i,j,2] <- 1-(1-logitp[i,j,2])^effort[i,2]
+    logitp[i,j,2] <- 1/(1+exp(-BD2[j]))
       }
       }
-    }
     }
     ",fill = TRUE)
 sink()
@@ -282,7 +286,7 @@ inits <- function(){list(z = y,BO1=rnorm(3,0,0.001),BO2=rnorm(3,0,0.001),BO3=rno
                          BE4=rnorm(3,0,0.001),BE5=rnorm(3,0,0.001),BE6=rnorm(3,0,0.001),
                          BE7=rnorm(3,0,0.001),BE8=rnorm(3,0,0.001),BE9=rnorm(3,0,0.001),
                          BE10=rnorm(3,0,0.001),BE11=rnorm(3,0,0.001),BE12=rnorm(3,0,0.001),
-                         BD1=rnorm(3,0,0.001))}
+                         BD1=rnorm(3,0,0.001),BD2=rnorm(3,0,0.001))}
 
 # Parameters monitored
 params <- c("BO1","BO2","BO3","BO4","BO5","BO6","BO7","BO8","BO9","BO10","BO11","BO12",
@@ -290,7 +294,8 @@ params <- c("BO1","BO2","BO3","BO4","BO5","BO6","BO7","BO8","BO9","BO10","BO11",
             "BE1","BE2","BE3","BE4","BE5","BE6","BE7","BE8","BE9","BE10","BE11","BE12",
             "sigmaO1","sigmaO2","sigmaO3","sigmaO4","sigmaO5","sigmaO6","sigmaO7","sigmaO8","sigmaO9","sigmaO10","sigmaO11","sigmaO12",
             "sigmaC1","sigmaC2","sigmaC3","sigmaC4","sigmaC5","sigmaC6","sigmaC7","sigmaC8","sigmaC9","sigmaC10","sigmaC11","sigmaC12",
-            "sigmaE1","sigmaE2","sigmaE3","sigmaE4","sigmaE5","sigmaE6","sigmaE7","sigmaE8","sigmaE9","sigmaE10","sigmaE11","sigmaE12")
+            "sigmaE1","sigmaE2","sigmaE3","sigmaE4","sigmaE5","sigmaE6","sigmaE7","sigmaE8","sigmaE9","sigmaE10","sigmaE11","sigmaE12",
+            "BD1","BD2")
 
 # MCMC settings
 ni <- 1000
